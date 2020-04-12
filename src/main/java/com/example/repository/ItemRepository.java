@@ -2,6 +2,8 @@ package com.example.repository;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -9,8 +11,11 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
+import com.example.controller.ShowItemListController;
 import com.example.domein.Item;
+import com.example.form.SearchForm;
 
 /**
  * itemテーブルを表すリポジトリ.
@@ -20,6 +25,8 @@ import com.example.domein.Item;
  */
 @Repository
 public class ItemRepository {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ItemRepository.class);
 
 	@Autowired 
 	private NamedParameterJdbcTemplate template;
@@ -72,6 +79,58 @@ public class ItemRepository {
 		String sql = "INSERT INTO items (name, item_condition_id, category_id, brand_name, price, shipping, item_description) VALUES(:name, :item_condition_id, :category_id, :brand_name, :price, :shipping, :item_description) ;";
 		SqlParameterSource param = new BeanPropertySqlParameterSource(item);
 		template.update(sql, param);
+	}
+	
+	public List<Item> search(SearchForm searchForm) {
+		MapSqlParameterSource param = new MapSqlParameterSource();
+		String sql = createSql(searchForm, param, null);
+		return template.query(sql, param, ITEM_ROW_MAPPER);
+	}
+	
+	public Integer searchCount(SearchForm searchForm) {
+		MapSqlParameterSource param = new MapSqlParameterSource();
+		String sql = createSql(searchForm, param, "count");
+		return template.queryForObject(sql, param, Integer.class);
+	}
+	
+	
+	private String createSql(SearchForm searchForm, MapSqlParameterSource param, String mode) {
+		
+		String sql = "SELECT i.id id, i.name \"name\", item_condition_id, category_id, brand_name, price, shipping, item_description, name_all"
+				+ " FROM items i LEFT JOIN category c ON c.id  = i.category_id "
+				+ " WHERE 1 = 1";
+		
+		//カテゴリー
+		if (!StringUtils.isEmpty(searchForm.getCategoryName())) {
+			sql += " AND name_all LIKE :name_all";
+			param.addValue("name_all", searchForm.getCategoryName() + "%");
+		}
+		
+		//商品名(曖昧検索)
+		if (!StringUtils.isEmpty(searchForm.getItemKeyword())) {
+			sql += " AND i.name LIKE :name";
+			param.addValue("name", "%" + searchForm.getItemKeyword() + "%");
+		}
+		
+		//ブランド名
+		if (!StringUtils.isEmpty(searchForm.getBrand())) {
+			sql += " AND brand = :brand";
+			param.addValue("brand", searchForm.getBrand());
+		}
+		
+		if ("count".equals(mode)) {
+			sql = sql.replaceFirst("SELECT.+FROM", "SELECT count(*) FROM");
+		}else {
+			sql += " ORDER BY i.id";
+			sql += " LIMIT 30 OFFSET " + ShowItemListController.ROW_PAR_PAGE * (searchForm.getPage() -1);
+		}
+		logger.info("sql =" + sql);
+		for (String paramName : param.getParameterNames()) {
+			logger.info(paramName + " = " + param.getValue(paramName));
+		}
+		
+		return sql;
+		
 	}
 	
 	

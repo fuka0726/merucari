@@ -1,28 +1,63 @@
 package com.example.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.example.domein.Item;
+import com.example.form.SearchForm;
 import com.example.service.ShowItemListService;
 
 @Controller
 @RequestMapping("")
 public class ShowItemListController {
 	
+	public static final int ROW_PAR_PAGE = 30;
+	
+	
+	
 	@Autowired
 	private ShowItemListService showItemListService;
 	
-	@RequestMapping("/")
-	public String showItemList(Model model) {
-		List<Item> itemList = showItemListService.showItemList();
-		model.addAttribute("itemList", itemList);
-		return "list";
+	@ModelAttribute
+	private SearchForm setupForm() {
+		return new SearchForm();
 	}
+	
+//	@RequestMapping("/")
+//	public String showItemList(Model model) {
+//		List<Item> itemList = showItemListService.showItemList();
+//		model.addAttribute("itemList", itemList);
+//		return "list";
+//	}
+	
+	@RequestMapping("/")
+	public String search(SearchForm searchForm, Model model) {
+		if (searchForm.getPage() == null) {
+			searchForm.setPage(1);
+		}
+	Integer searchCount = showItemListService.searchCount(searchForm);
+	int maxPage = searchCount / ROW_PAR_PAGE;
+	if (searchCount % ROW_PAR_PAGE != 0) {
+		maxPage++;
+	}
+	if (searchForm.getPage() > maxPage) {
+		searchForm.setPage(1);
+	}
+	
+	model.addAttribute("itemList", showItemListService.search(searchForm));
+	model.addAttribute("maxPage", maxPage);
+	return "list";
+	
+	
+	
+	}
+
+	
+	
+	
+	
 	
 	
 	

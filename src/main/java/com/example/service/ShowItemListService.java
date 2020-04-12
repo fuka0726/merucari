@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domein.Item;
+import com.example.form.SearchForm;
 import com.example.repository.ItemRepository;
 
 
@@ -32,5 +33,12 @@ public class ShowItemListService {
 		return itemList;
 	}
 	
+	public List<Item> search(SearchForm searchForm) {
+		return itemRepository.search(searchForm);
+	}
+	
+	public Integer searchCount(SearchForm searchForm) {
+		return itemRepository.searchCount(searchForm);
+	}
 	
 }
