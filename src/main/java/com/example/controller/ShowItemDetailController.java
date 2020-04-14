@@ -35,7 +35,6 @@ public class ShowItemDetailController {
 	@RequestMapping("/showItemDetail")
 	public String showItemDetail(String id, Model model) {
 		Item item = ShowItemDetailService.showItemDetail(Integer.parseInt(id));
-		item.setItemList(ShowItemListService.showItemList());
 		model.addAttribute("item", item);
 		return "detail";
 	}

@@ -26,7 +26,7 @@ import com.example.form.SearchForm;
 @Repository
 public class ItemRepository {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ItemRepository.class);
+//	private static final Logger logger = LoggerFactory.getLogger(ItemRepository.class);
 
 	@Autowired 
 	private NamedParameterJdbcTemplate template;
@@ -54,11 +54,11 @@ public class ItemRepository {
 	 *
 	 * @return 商品一覧
 	 */
-	public List<Item> findAll(){
-		String sql = "SELECT i.id, i.name, i.category_id, i.shipping, i.item_description, i.price, c.name_all, i.brand_name, i.item_condition_id FROM items i INNER JOIN category c ON i.category_id = c.id ORDER BY i.id limit 30";
-		List<Item> itemList = template.query(sql, ITEM_ROW_MAPPER);
-		return itemList;
-	}
+//	public List<Item> findAll(){
+//		String sql = "SELECT i.id, i.name, i.category_id, i.shipping, i.item_description, i.price, c.name_all, i.brand_name, i.item_condition_id FROM items i INNER JOIN category c ON i.category_id = c.id ORDER BY i.id limit 30";
+//		List<Item> itemList = template.query(sql, ITEM_ROW_MAPPER);
+//		return itemList;
+//	}
 	
 	/**
 	 * IDから商品情報を検索します.
@@ -114,7 +114,7 @@ public class ItemRepository {
 		
 		//ブランド名
 		if (!StringUtils.isEmpty(searchForm.getBrand())) {
-			sql += " AND brand = :brand";
+			sql += " AND brand_name = :brand";
 			param.addValue("brand", searchForm.getBrand());
 		}
 		
@@ -124,10 +124,10 @@ public class ItemRepository {
 			sql += " ORDER BY i.id";
 			sql += " LIMIT 30 OFFSET " + ShowItemListController.ROW_PAR_PAGE * (searchForm.getPage() -1);
 		}
-		logger.info("sql =" + sql);
-		for (String paramName : param.getParameterNames()) {
-			logger.info(paramName + " = " + param.getValue(paramName));
-		}
+//		logger.info("sql =" + sql);
+//		for (String paramName : param.getParameterNames()) {
+//			logger.info(paramName + " = " + param.getValue(paramName));
+//		}
 		
 		return sql;
 		

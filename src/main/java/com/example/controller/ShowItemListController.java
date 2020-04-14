@@ -1,12 +1,19 @@
 package com.example.controller;
 
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.domein.Category;
 import com.example.form.SearchForm;
+import com.example.service.CategoryService;
 import com.example.service.ShowItemListService;
 
 @Controller
@@ -15,7 +22,10 @@ public class ShowItemListController {
 	
 	public static final int ROW_PAR_PAGE = 30;
 	
+	private CategoryService categoryService;
 	
+	@Autowired
+	private HttpSession session;
 	
 	@Autowired
 	private ShowItemListService showItemListService;
@@ -36,7 +46,8 @@ public class ShowItemListController {
 	public String search(SearchForm searchForm, Model model) {
 		if (searchForm.getPage() == null) {
 			searchForm.setPage(1);
-		}
+	}
+		System.out.println(searchForm);
 	Integer searchCount = showItemListService.searchCount(searchForm);
 	int maxPage = searchCount / ROW_PAR_PAGE;
 	if (searchCount % ROW_PAR_PAGE != 0) {
@@ -48,12 +59,39 @@ public class ShowItemListController {
 	
 	model.addAttribute("itemList", showItemListService.search(searchForm));
 	model.addAttribute("maxPage", maxPage);
+	model.addAttribute("nowPage", searchForm.getPage());
+	model.addAttribute("lastPage", searchForm.getPage());
 	return "list";
-	
-	
 	
 	}
 
+//	@RequestMapping("/categories")
+//	@ResponseBody
+//	public List<Category> categories() {
+//		return getCategories();
+//	}
+	
+	
+	
+//	private List<Category> getCategories() {
+//		@SuppressWarnings("unchecked")
+//		List<Category> categories = (List<Category>) session.getAttribute("categories");
+//		if (categories == null) {
+//			categories = categoryService.findAllCategories();
+//			session.setAttribute("categories", categories);
+//		}
+//		return categories;
+//	}
+	
+	
+//	private Category getCategoryByName(List<Category> categories, String categoryName) {
+//		for (Category category : categories) {
+//			if(category.getName().equals(categoryName)) {
+//				return category;
+//			}
+//		}
+//		return null;
+//	}
 	
 	
 	

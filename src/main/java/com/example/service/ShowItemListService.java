@@ -28,10 +28,10 @@ public class ShowItemListService {
 	 * 商品情報を全件取得します
 	 * @return
 	 */
-	public List<Item> showItemList(){
-		List<Item> itemList = itemRepository.findAll();
-		return itemList;
-	}
+//	public List<Item> showItemList(){
+//		List<Item> itemList = itemRepository.findAll();
+//		return itemList;
+//	}
 	
 	public List<Item> search(SearchForm searchForm) {
 		return itemRepository.search(searchForm);

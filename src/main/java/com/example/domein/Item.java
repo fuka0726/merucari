@@ -1,5 +1,5 @@
 package com.example.domein;
-import java.util.List;
+
 /**
  * Itemテーブルを表すドメインです.
  * @author fuka
@@ -24,8 +24,7 @@ public class Item {
 	private String itemDescription;
 	/**　カテゴリー名 */
 	private String nameAll;
-	/**　商品リスト */
-	private List<Item> itemList;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -80,18 +79,24 @@ public class Item {
 	public void setNameAll(String nameAll) {
 		this.nameAll = nameAll;
 	}
-	public List<Item> getItemList() {
-		return itemList;
-	}
-	public void setItemList(List<Item> itemList) {
-		this.itemList = itemList;
-	}
 	@Override
 	public String toString() {
 		return "Item [id=" + id + ", name=" + name + ", itemConditionId=" + itemConditionId + ", categoryId="
 				+ categoryId + ", brandName=" + brandName + ", price=" + price + ", shipping=" + shipping
-				+ ", itemDescription=" + itemDescription + ", nameAll=" + nameAll + ", itemList=" + itemList + "]";
+				+ ", itemDescription=" + itemDescription + ", nameAll=" + nameAll + "]";
 	}
+	public String getDaiCategoryName() {
+        return nameAll != null ? nameAll.split("/")[0] : "";
+    }
+
+    public String getChuCategoryName() {
+        return nameAll != null ? nameAll.split("/")[1] : "";
+    }
+
+    public String getSyoCategoryName() {
+        return nameAll != null ? nameAll.split("/")[2] : "";
+    }
+
 	
 	
 }
