@@ -81,19 +81,30 @@ public class ItemRepository {
 		template.update(sql, param);
 	}
 	
+	
+	/**
+	 * 普通の検索機能(ページング機能にも使用)
+	 * @param searchForm
+	 * @return
+	 */
 	public List<Item> search(SearchForm searchForm) {
 		MapSqlParameterSource param = new MapSqlParameterSource();
 		String sql = createSql(searchForm, param, null);
 		return template.query(sql, param, ITEM_ROW_MAPPER);
 	}
 	
+	/**
+	 * 検索にヒットしたデータを数えるメソッド(ページング機能にも使用)
+	 * @param searchForm
+	 * @return
+	 */
 	public Integer searchCount(SearchForm searchForm) {
 		MapSqlParameterSource param = new MapSqlParameterSource();
 		String sql = createSql(searchForm, param, "count");
 		return template.queryForObject(sql, param, Integer.class);
 	}
 	
-	
+	//先に作る(万能なsql)
 	private String createSql(SearchForm searchForm, MapSqlParameterSource param, String mode) {
 		
 		String sql = "SELECT i.id id, i.name \"name\", item_condition_id, category_id, brand_name, price, shipping, item_description, name_all"
@@ -118,11 +129,14 @@ public class ItemRepository {
 			param.addValue("brand", searchForm.getBrand());
 		}
 		
+		//modeがcountだったら、SELECT〜FROMまでをSELECT count(*) FROMに置き換える
 		if ("count".equals(mode)) {
 			sql = sql.replaceFirst("SELECT.+FROM", "SELECT count(*) FROM");
+		
 		}else {
 			sql += " ORDER BY i.id";
 			sql += " LIMIT 30 OFFSET " + ShowItemListController.ROW_PAR_PAGE * (searchForm.getPage() -1);
+			//(1ページあたりの表示件数(30) × (検索ページ番号 -1)
 		}
 //		logger.info("sql =" + sql);
 //		for (String paramName : param.getParameterNames()) {

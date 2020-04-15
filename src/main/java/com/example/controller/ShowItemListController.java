@@ -22,7 +22,7 @@ public class ShowItemListController {
 	
 	public static final int ROW_PAR_PAGE = 30;
 	
-	private CategoryService categoryService;
+//	private CategoryService categoryService;
 	
 	@Autowired
 	private HttpSession session;
@@ -42,25 +42,35 @@ public class ShowItemListController {
 //		return "list";
 //	}
 	
+	/**
+	 * ページング機能
+	 * @param searchForm
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping("/")
 	public String search(SearchForm searchForm, Model model) {
+		//検索フォームが空なら1ページを表示
 		if (searchForm.getPage() == null) {
 			searchForm.setPage(1);
 	}
-		System.out.println(searchForm);
+		// 検索したページの数字
 	Integer searchCount = showItemListService.searchCount(searchForm);
+		//　最大ページは検索したページの数字/30
 	int maxPage = searchCount / ROW_PAR_PAGE;
+		//　もしそれが0で割り切れなかったら最大ページを1増やす
 	if (searchCount % ROW_PAR_PAGE != 0) {
 		maxPage++;
 	}
+		//検索フォームが最大ページより大きかったら1ページを表示
 	if (searchForm.getPage() > maxPage) {
 		searchForm.setPage(1);
 	}
-	
+	//それぞれバリューに名前をつける
 	model.addAttribute("itemList", showItemListService.search(searchForm));
 	model.addAttribute("maxPage", maxPage);
-	model.addAttribute("nowPage", searchForm.getPage());
-	model.addAttribute("lastPage", searchForm.getPage());
+	model.addAttribute("nowPage", searchForm.getPage()); //最初のページでprevボタンを非表示にさせるため名前をつける
+	model.addAttribute("lastPage", searchForm.getPage()); //最後のページnextを非表示
 	return "list";
 	
 	}

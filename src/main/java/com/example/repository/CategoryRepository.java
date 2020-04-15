@@ -10,6 +10,12 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import com.example.domein.Category;
 
+/**
+ * 
+ * (ページング関係ない)
+ * @author fuka
+ *
+ */
 public class CategoryRepository {
 
 	private static final RowMapper<Category> ROW_MAPPER = new BeanPropertyRowMapper<>(Category.class);
@@ -17,12 +23,19 @@ public class CategoryRepository {
 	@Autowired
 	private NamedParameterJdbcTemplate template;
 	
+	/**
+	 * 親idの検索.
+	 * @param parentId
+	 * @return
+	 */
 	public List<Category> findByParentId(Integer parentId){
 		MapSqlParameterSource param = new MapSqlParameterSource();
 		String sql = "SELECT id, name FROM category";
+		//親idがあったら、親idを指定する
 		if (parentId != null) {
-			sql += " WHERE parent_id = :parentId";
+			sql += " WHERE parent_id = :parentId"; //SQLインジェクションのため２段階踏む
 			param.addValue("parentId", parentId);
+			//なければnull
 		} else {
 			sql += " WHERE parent_id is null";
 		}

@@ -1,25 +1,17 @@
 $(function() {
 
-	// next,previousリンクの無効化
-    var currentPage = parseInt($('#searchForm [name=page]').val());
-    var maxPage = parseInt($('#maxPage').text());
-    if (currentPage == 1) {
-      $('.previous').addClass('disabled');
-    }
-    if (currentPage == maxPage) {
-      $('.next').addClass('disabled');
-    }
 
-    // nextリンククリック時のイベント処理設定 //ページング
+
+    // nextリンククリック時のイベント処理設定 
      $('.next').on('click', function() {
-      $('#searchForm [name=page]').val(currentPage + 1);
+      $('#searchForm [name=page]').val(currentPage + 1);　　//ページング
 //      $('#searchForm [name=categoryName]').val(createCategoryName());
       $('#searchForm').submit();
     }); 
 
     // previousリンククリック時のイベント処理設定
     $('.previous').on('click', function() {
-      $('#searchForm [name=page]').val(currentPage - 1);
+      $('#searchForm [name=page]').val(currentPage - 1);　//ページング
 //      $('#searchForm [name=categoryName]').val(createCategoryName());
       $('#searchForm').submit();
     });

@@ -85,6 +85,7 @@ public class Item {
 				+ categoryId + ", brandName=" + brandName + ", price=" + price + ", shipping=" + shipping
 				+ ", itemDescription=" + itemDescription + ", nameAll=" + nameAll + "]";
 	}
+	//nameAllがnullじゃなかったらnameAllの0番目の/までの文字、nullなら空文字
 	public String getDaiCategoryName() {
         return nameAll != null ? nameAll.split("/")[0] : "";
     }
