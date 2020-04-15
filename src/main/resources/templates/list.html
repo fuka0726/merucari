@@ -27,7 +27,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="./list.html">Rakus Items</a>
+      <a class="navbar-brand" th:href="@{/}">Rakus Items</a>
     </div>
     <div id="navbar" class="collapse navbar-collapse">
       <div>
@@ -51,7 +51,7 @@
     <div id="forms">
       <form id="searchForm" th:action="@{/}" class="form-inline" role="form" th:object="${searchForm}">
         <div class="form-group">
-          <input type="text" class="form-control" id="name" placeholder="item name"/>
+          <input type="text" class="form-control" id="name" placeholder="item name" name="itemKeyword"/>
         </div>
         <div class="form-group"><i class="fa fa-plus"></i></div>
         <div class="form-group">
@@ -82,7 +82,7 @@
         </div>
         <div class="form-group"><i class="fa fa-plus"></i></div>
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="brand"/>
+          <input type="text" class="form-control" placeholder="brand" name="brand"/><!--brandをクリックで検索  -->
         <div ></div>
         </div>
         <div class="form-group"></div>
@@ -139,13 +139,13 @@
             th:href="@{'/showItemDetail?id=' + ${item.id}}"><span th:text="${item.name}">Razer BlackWidow Chroma Keyboard</span></a></td>
             <td class="item-price" th:text="${item.price}">52.0</td>
             <td class="item-category">
-           <div th:if="${item.nameAll}">
+           <div th:if="${item.nameAll}"> 
             <a class="categoryLink" th:data-category="${item.daiCategoryName}" th:text="${item.daiCategoryName}">Electronics</a> /
             <a class="categoryLink" th:data-category="${item.daiCategoryName} + '/' + ${item.chuCategoryName}" th:text="${item.chuCategoryName}">Computers &amp; Tablets</a> / 
             <a class="categoryLink" th:data-category="${item.daiCategoryName} + '/' + ${item.chuCategoryName} + '/' + ${item.syoCategoryName}" th:text="${item.syoCategoryName}">Components &amp; Parts</a>
            </div>
            </td>
-            <td class="item-brand" th:text="${item.brandName}"><a href="">Razer</a></td>
+            <td class="item-brand"><a class="brandLink" th:text="${item.brandName}">Razer</a></td>
             <td class="item-condition" th:text="${item.itemConditionId}">3</td>
           </tr>
           

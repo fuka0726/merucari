@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import com.example.domein.Category;
 
@@ -16,6 +17,7 @@ import com.example.domein.Category;
  * @author fuka
  *
  */
+@Repository
 public class CategoryRepository {
 
 	private static final RowMapper<Category> ROW_MAPPER = new BeanPropertyRowMapper<>(Category.class);

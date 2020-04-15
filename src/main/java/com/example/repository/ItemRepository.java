@@ -26,7 +26,7 @@ import com.example.form.SearchForm;
 @Repository
 public class ItemRepository {
 	
-//	private static final Logger logger = LoggerFactory.getLogger(ItemRepository.class);
+	private static final Logger logger = LoggerFactory.getLogger(ItemRepository.class);
 
 	@Autowired 
 	private NamedParameterJdbcTemplate template;
@@ -61,7 +61,7 @@ public class ItemRepository {
 //	}
 	
 	/**
-	 * IDから商品情報を検索します.
+	 * IDから商品情報を検索します.(商品詳細表示)
 	 * @param id
 	 * @return
 	 */
@@ -73,6 +73,7 @@ public class ItemRepository {
 	}
 	
 	/**
+	 * 商品登録用.addページ
 	 * @param item
 	 */
 	public void insert(Item item) {
@@ -138,10 +139,10 @@ public class ItemRepository {
 			sql += " LIMIT 30 OFFSET " + ShowItemListController.ROW_PAR_PAGE * (searchForm.getPage() -1);
 			//(1ページあたりの表示件数(30) × (検索ページ番号 -1)
 		}
-//		logger.info("sql =" + sql);
-//		for (String paramName : param.getParameterNames()) {
-//			logger.info(paramName + " = " + param.getValue(paramName));
-//		}
+		logger.info("sql =" + sql);
+		for (String paramName : param.getParameterNames()) {
+			logger.info(paramName + " = " + param.getValue(paramName));
+		}
 		
 		return sql;
 		

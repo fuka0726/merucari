@@ -12,17 +12,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.domein.Category;
+import com.example.domein.Item;
 import com.example.form.SearchForm;
 import com.example.service.CategoryService;
 import com.example.service.ShowItemListService;
 
+/**
+ * @author fuka
+ *
+ */
 @Controller
 @RequestMapping("")
 public class ShowItemListController {
 	
 	public static final int ROW_PAR_PAGE = 30;
 	
-//	private CategoryService categoryService;
+	@Autowired
+	private CategoryService categoryService;
 	
 	@Autowired
 	private HttpSession session;
@@ -35,12 +41,6 @@ public class ShowItemListController {
 		return new SearchForm();
 	}
 	
-//	@RequestMapping("/")
-//	public String showItemList(Model model) {
-//		List<Item> itemList = showItemListService.showItemList();
-//		model.addAttribute("itemList", itemList);
-//		return "list";
-//	}
 	
 	/**
 	 * ページング機能
@@ -66,8 +66,11 @@ public class ShowItemListController {
 	if (searchForm.getPage() > maxPage) {
 		searchForm.setPage(1);
 	}
+	System.out.println(searchForm);
+	List<Item> itemList = showItemListService.search(searchForm);
+	
 	//それぞれバリューに名前をつける
-	model.addAttribute("itemList", showItemListService.search(searchForm));
+	model.addAttribute("itemList", itemList);
 	model.addAttribute("maxPage", maxPage);
 	model.addAttribute("nowPage", searchForm.getPage()); //最初のページでprevボタンを非表示にさせるため名前をつける
 	model.addAttribute("lastPage", searchForm.getPage()); //最後のページnextを非表示
@@ -75,64 +78,74 @@ public class ShowItemListController {
 	
 	}
 
-//	@RequestMapping("/categories")
-//	@ResponseBody
-//	public List<Category> categories() {
-//		return getCategories();
-//	}
-	
-	
-	
-//	private List<Category> getCategories() {
-//		@SuppressWarnings("unchecked")
-//		List<Category> categories = (List<Category>) session.getAttribute("categories");
-//		if (categories == null) {
-//			categories = categoryService.findAllCategories();
-//			session.setAttribute("categories", categories);
-//		}
-//		return categories;
-//	}
-	
-	
-//	private Category getCategoryByName(List<Category> categories, String categoryName) {
-//		for (Category category : categories) {
-//			if(category.getName().equals(categoryName)) {
-//				return category;
-//			}
-//		}
-//		return null;
-//	}
-	
-	
-	
-	
+	@RequestMapping("/categories")
+	@ResponseBody
+	public List<Category> categories() {
+		return getCategories();
+	}
 	
 	
 	
 	/**
-	 * ページング機能を実装します.
+	 * 全カテゴリー情報を取得する.
 	 * 
-	 * @param form 並び順を選択するフォーム
-	 * @param page ページ数
-	 * @param searchName 検索文字列
-	 * @param model　モデル
-	 * @return 商品一覧画面の○ページ目
+	 * @return　カテゴリー
 	 */
-//	@RequestMapping("/to_other_page")
-//	public String toOtherPage(Integer page,Model model) {
-//		List<Original> originalList = showItemListService.showOriginalList();
-//		Integer pageNumber = originalList.size() / 20;
-//		List<Integer> pageNumberList = new ArrayList<>();
-//		for (int i = 1; i <= pageNumber; i++) {
-//			if (i == page) {
-//				continue;
-//			}
-//			pageNumberList.add(i);
-//		}
-//		model.addAttribute("pageNumberList", pageNumberList);
-//		
-//		
-//		return "list";
+	private List<Category> getCategories() {
+		@SuppressWarnings("unchecked")
+		//カテゴリーをセッションに保存
+		List<Category> categories = (List<Category>) session.getAttribute("categories");
+//		List<Category> categories = categoryService.findAllCategories();
+		//　もしnullならカテゴリー情報をDBから取得する
+		if (categories == null) {
+			categories = categoryService.findAllCategories();
+			session.setAttribute("categories", categories);
+		}
+		return categories;
+	}
+	
+	
+	
+	   /**
+     * 検索完了時、カテゴリーのプルダウンを維持するために
+     * categoryNameから、daiCategoryId, chuCategoryId, syoCategoryId を求めてフォームにセットする.
+     *
+     * @param searchForm
+     * @param categories
+     */
+//    private void setCategoryIds(SearchForm searchForm, List<Category> categories) {
+//        // 一旦全てクリアーする
+//        searchForm.setDaiCategoryId(null);
+//        searchForm.setChuCategoryId(null);
+//        searchForm.setSyoCategoryId(null);
+//        if (searchForm.getCategoryName() != null) {
+//            String[] categoryArray = searchForm.getCategoryName().split("/");
+//            if (categoryArray.length >= 1 && !"".equals(categoryArray[0])) {
+//                Category daiCategory = getCategoryByName(categories, categoryArray[0]);
+//                searchForm.setDaiCategoryId(daiCategory.getId());
+//                if (categoryArray.length >= 2) {
+//                    Category chuCategory = getCategoryByName(daiCategory.getChildCategories(), categoryArray[1]);
+//                    searchForm.setChuCategoryId(chuCategory.getId());
+//                    if (categoryArray.length >= 3) {
+//                        Category syoCategory = getCategoryByName(chuCategory.getChildCategories(), categoryArray[2]);
+//                        searchForm.setSyoCategoryId(syoCategory.getId());
+//                    }
+//                }
+//            }
+//        }
+//    }
 //	
+
+//	private Category getCategoryByName(List<Category> categories, String categoryName) {
+//	for (Category category : categories) {
+//		if(category.getName().equals(categoryName)) {
+//			return category;
+//		}
 //	}
+//	return null;
+//}
+
+	
+	
+
 }
