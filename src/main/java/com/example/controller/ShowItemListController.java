@@ -66,6 +66,8 @@ public class ShowItemListController {
 	if (searchForm.getPage() > maxPage) {
 		searchForm.setPage(1);
 	}
+	
+	setCategoryIds(searchForm, getCategories());
 	System.out.println(searchForm);
 	List<Item> itemList = showItemListService.search(searchForm);
 	
@@ -113,37 +115,37 @@ public class ShowItemListController {
      * @param searchForm
      * @param categories
      */
-//    private void setCategoryIds(SearchForm searchForm, List<Category> categories) {
-//        // 一旦全てクリアーする
-//        searchForm.setDaiCategoryId(null);
-//        searchForm.setChuCategoryId(null);
-//        searchForm.setSyoCategoryId(null);
-//        if (searchForm.getCategoryName() != null) {
-//            String[] categoryArray = searchForm.getCategoryName().split("/");
-//            if (categoryArray.length >= 1 && !"".equals(categoryArray[0])) {
-//                Category daiCategory = getCategoryByName(categories, categoryArray[0]);
-//                searchForm.setDaiCategoryId(daiCategory.getId());
-//                if (categoryArray.length >= 2) {
-//                    Category chuCategory = getCategoryByName(daiCategory.getChildCategories(), categoryArray[1]);
-//                    searchForm.setChuCategoryId(chuCategory.getId());
-//                    if (categoryArray.length >= 3) {
-//                        Category syoCategory = getCategoryByName(chuCategory.getChildCategories(), categoryArray[2]);
-//                        searchForm.setSyoCategoryId(syoCategory.getId());
-//                    }
-//                }
-//            }
-//        }
-//    }
-//	
+    private void setCategoryIds(SearchForm searchForm, List<Category> categories) {
+        // 一旦全てクリアーする
+        searchForm.setDaiCategoryId(null);
+        searchForm.setChuCategoryId(null);
+        searchForm.setSyoCategoryId(null);
+        if (searchForm.getCategoryName() != null) {
+            String[] categoryArray = searchForm.getCategoryName().split("/");
+            if (categoryArray.length >= 1 && !"".equals(categoryArray[0])) {
+                Category daiCategory = getCategoryByName(categories, categoryArray[0]);
+                searchForm.setDaiCategoryId(daiCategory.getId());
+                if (categoryArray.length >= 2) {
+                    Category chuCategory = getCategoryByName(daiCategory.getChildCategories(), categoryArray[1]);
+                    searchForm.setChuCategoryId(chuCategory.getId());
+                    if (categoryArray.length >= 3) {
+                        Category syoCategory = getCategoryByName(chuCategory.getChildCategories(), categoryArray[2]);
+                        searchForm.setSyoCategoryId(syoCategory.getId());
+                    }
+                }
+            }
+        }
+    }
+	
 
-//	private Category getCategoryByName(List<Category> categories, String categoryName) {
-//	for (Category category : categories) {
-//		if(category.getName().equals(categoryName)) {
-//			return category;
-//		}
-//	}
-//	return null;
-//}
+	private Category getCategoryByName(List<Category> categories, String categoryName) {
+	for (Category category : categories) {
+		if(category.getName().equals(categoryName)) {
+			return category;
+		}
+	}
+	return null;
+}
 
 	
 	
