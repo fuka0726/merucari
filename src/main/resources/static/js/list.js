@@ -16,7 +16,7 @@ $(function() {
     // nextリンククリック時のイベント処理設定
      $('.next').on('click', function() {
       $('#searchForm [name=page]').val(currentPage + 1);　　// ページング
-      $('#searchForm [name=categoryName]').val(createCategoryName());
+      $('#searchForm [name=categoryName]').val(createCategoryName()); 
       $('#searchForm').submit();
     }); 
 
@@ -92,12 +92,12 @@ $(function() {
 // カテゴリーのプルダウンの選択文字列を連結  //プルダウン関係ない
  function createCategoryName() {
      let categoryName = '';    
-     if ($('#daiSelect option:selected') && $('#daiSelect option:selected').val() != '') {  //カテゴリーが選択されてたら
-       categoryName += $('#daiSelect option:selected').text();　//textの内容を取得　　other押したらotherを
-       if ($('#chuSelect option:selected').val() != '') {
+     if ($('#daiSelect option:selected') && $('#daiSelect option:selected').val() != '') {  //大カテゴリーが選択されてたら
+       categoryName += $('#daiSelect option:selected').text();　//textの内容を取得　　other押したらotherを取得
+       if ($('#chuSelect option:selected').val() != '') {    //中カテゴリーが選択されてたら
          categoryName += '/' + $('#chuSelect option:selected').text();　//DBのname_allにあわせてる
-         if ($('#syoSelect option:selected').val() != '') {
-           categoryName += '/' + $('#syoSelect option:selected').text();
+         if ($('#syoSelect option:selected').val() != '') {   //小カテゴリーが選択されてたら
+           categoryName += '/' + $('#syoSelect option:selected').text();　　// 「/」で区切られている小カテゴリの内容を取得
          }
        }
      }
@@ -124,7 +124,7 @@ $(function() {
    }
    createSyoCategorySelect();
  } else {
-   $('#chuSelect').html('');
+   $('#chuSelect').html('');       //プルダウンには表示されない
    $('#chuCategoryId').val('');
    $('#syoSelect').html('');
    $('#syoCategoryId').val('');
@@ -133,17 +133,17 @@ $(function() {
  
 //小カテゴリーのプルダウン生成  4
  function createSyoCategorySelect() {
- let selectedChuCategoryValue = $('#chuSelect option:selected').val();
- if (selectedChuCategoryValue != '') {
-   for (let i = 0; i < chuCategories.length; i++) {
-     let chuCategory = chuCategories[i];
-     if (chuCategory.id == selectedChuCategoryValue) {
-       selectedChuCategory = chuCategory;
-       var syoOptions = '<option value="">- syoCategory -</option>';
-       syoCategories = chuCategory.childCategories;
-       for (let j = 0; j < syoCategories.length; j++) {
-         let syoCategory = syoCategories[j];
-         let selectedStr = $('#searchForm [name=syoCategoryId]').val() == syoCategory.id ? ' selected' : '';
+ let selectedChuCategoryValue = $('#chuSelect option:selected').val(); //val()は値を受け取る、選択された値をセット
+ if (selectedChuCategoryValue != '') {　　　//中カテゴリが空じゃなければ(選択されていたら)
+   for (let i = 0; i < chuCategories.length; i++) {  //中カテゴリを取り出す
+     let chuCategory = chuCategories[i];    //中カテゴリーを配列にする
+     if (chuCategory.id == selectedChuCategoryValue) {  //中カテゴリーのidと選択されたものが一致したら
+       selectedChuCategory = chuCategory;     //セレクトカテゴリーに代入
+       var syoOptions = '<option value="">- syoCategory -</option>';　　//htmlの表示を作成
+       syoCategories = chuCategory.childCategories; //小カテゴリーは中カテゴリーの子
+       for (let j = 0; j < syoCategories.length; j++) {   //小カテゴリーを取り出す
+         let syoCategory = syoCategories[j];　　　// 小カテゴリを配列にする
+         let selectedStr = $('#searchForm [name=syoCategoryId]').val() == syoCategory.id ? ' selected' : '';　//検索フォームから取得した小カテゴリーIdと一致したら、選択された状態にする
          syoOptions += '<option value="' + syoCategory.id + '"' + selectedStr + '>' + syoCategory.name + '</option>';
        }
        $('#syoSelect').html(syoOptions);
